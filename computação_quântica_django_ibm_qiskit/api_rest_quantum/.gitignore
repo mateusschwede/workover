@@ -1,0 +1,5 @@
+# .env
+__pycache__/
+*.pyc
+venv/
+# DESCOMENTE O '.env' ACIMA PARA EVITAR PUBLICAR SEU ARQUIVO DE VARIÁVEIS DE AMBIENTE
