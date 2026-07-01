@@ -1,0 +1,32 @@
+name: Pipeline Frontend CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+
+jobs:
+  testes-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Instalar dependências
+        run: npm install
+        working-directory: cafe-frontend
+
+      - name: Executar testes unitários e de integração
+        run: npx vitest
+        working-directory: cafe-frontend
+
+      - name: Gerar relatório de testes
+        run: npx vitest --reporter=html
+        working-directory: cafe-frontend

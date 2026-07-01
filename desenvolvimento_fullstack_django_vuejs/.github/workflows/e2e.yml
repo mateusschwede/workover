@@ -1,0 +1,76 @@
+name: Pipeline E2E
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+
+jobs:
+    testes-e2e:
+        runs-on: ubuntu-latest
+        services:
+            postgres:
+                image: postgres:15
+                env:
+                    POSTGRES_USER: postgres
+                    POSTGRES_PASSWORD: postgres
+                    POSTGRES_DB: test_db
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+
+        steps:
+            - name: Fazer checkout do código
+              uses: actions/checkout@v3
+
+            - name: Configurar Python 3.13
+              uses: actions/setup-python@v4
+              with:
+                  python-version: "3.13"
+
+            - name: Configurar Node.js 22
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "22"
+
+            - name: Instalar dependências do backend
+              working-directory: ./paris_cafe
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install -r requirements.txt
+
+            - name: Executar migrações Django
+              working-directory: ./paris_cafe
+              env:
+                  DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
+                  DJANGO_SETTINGS_MODULE: paris_cafe.settings
+              run: |
+                  python manage.py migrate
+
+            - name: Instalar dependências frontend
+              working-directory: ./cafe-frontend
+              run: npm install
+
+            - name: Subir backend em background
+              working-directory: ./paris_cafe
+              env:
+                  DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
+                  DJANGO_SETTINGS_MODULE: paris_cafe.settings
+              run: |
+                  nohup python manage.py runserver 0.0.0.0:8000 &
+            
+            - name: Subir frontend em background
+              working-directory: ./cafe-frontend
+              run: |
+                  nohup npm run dev &
+
+            - name: Executar testes E2E com Cypress
+              working-directory: ./cafe-frontend
+              env:
+                  VITE_BACKEND_URL: http://127.0.0.1:8000
+              run: npx cypress run

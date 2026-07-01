@@ -1,0 +1,27 @@
+{
+    "files": [],
+    "references": [
+        {
+            "path": "./tsconfig.node.json"
+        },
+        {
+            "path": "./tsconfig.app.json"
+        }
+    ],
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "types": [
+            "cypress"
+        ],
+        "esModuleInterop": true,
+        "moduleDetection": "force",
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "strict": true
+    },
+    "include": [
+        "cypress/**/*.ts"
+    ]
+}
