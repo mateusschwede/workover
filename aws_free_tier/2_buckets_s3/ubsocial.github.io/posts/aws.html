@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="../icons/logoTit.png">
+    <link rel="stylesheet" href="../estilo.css">
+    <title>UB Social</title>
+</head>
+<body>
+<div class="container-fluid">
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            <nav class="navbar rounded-bottom fixed-top navbar-expand-lg navbar-light bg-light shadow">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="../index.html"><img src="../icons/logo.png" class="d-inline-block align-text-top" width="11pt"> UB Social</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../sobre/sobre.html">Sobre</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../cursos.html">Cursos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../livros/livros.html">Livros</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 text-center" id="titulo">
+            <h1>AWS</h1>
+            <h6>Console Amazon Web Services free tier</h6>
+            <a href="../index.html" class="btn btn-link text-decoration-none mb-3">Voltar</a>
+        </div>
+
+        <div class="col-sm-12">
+            <p class="text-warning text-center">RESUMO EM CONSTRUÇÃO</p>
+            <h4>Material complementar:</h4>
+            <ul>
+                <li>Conteúdo no YouTube: <a href="https://youtube.com/playlist?list=PLnPZ9TE1Tj4CygvubCbQtSUFFAaTR0Ehm&si=M2_9DbAEJ44bRBon" target="_blank" class="text-decoration-none">Acesse</a></li>
+                <li>Conteúdo no GitHub: <a href="https://github.com/mateusschwede/workover_aws" target="_blank" class="text-decoration-none">Acesse</a></li>
+                <li>Curso gratuito e com certificado na Workover Academy (Curso de Django API REST): <a class="text-decoration-none">Acesse em breve</a></li>
+            </ul>
+
+            <br><h4>EC2:</h4>
+            <p id="textoPost">Amazon EC2 (Elastic Compute Cloud) fornece servidores virtuais na nuvem (instâncias) que podem ser usados para rodar aplicações, hospedar sites, bancos de dados, entre outros. Integra-se com outros serviços AWS, como S3 (armazenamento), RDS (banco de dados) e VPC (rede privada). Usado para hospedar site ou aplicação web, criar ambientes de desenvolvimento e testes, hospedar softwares pesados (IA ML, processamento de dados) e jogos, e backend de aplicações. Criar instância EC2 Ubuntu CLI (free tier), com aplicação nginx, habilitada para acesso externo:</p>
+<small><pre><code>
+--- CRIAR INSTÂNCIA AWS ---
+EC2 / Instâncias / Executar instâncias
+- Nome: ubuntuNginxTeste1
+- AMI: Ubuntu Server (nível gratuito)
+- Tipo: t3.micro (verificar se região é t2 ou t3 nível gratuito)
+- Criar par de chaves:
+-- Nome: keyNginxTeste1
+-- Tipo: RSA
+-- Formato: conforme SO de sua máquina
+- Rede:
+-- Atribuir IP público automaticamente: habilitar
+-- Grupo de segurança criado automaticamente, com regras:
+--- Permitir tráfego HTTP qualquer lugar
+--- Permitir tráfego HTTPS qualquer lugar
+--- Permitir tráfego SSH qualquer lugar
+OBS: Após instância criada, pode-se editar regras de entrada do grupo de segurança, para permitir acesso apenas de IPs e portas específicas (EC2 / Grupos de segurança / Selecionar grupo / Editar regras de entrada)
+- Armazenamento: 8GB (nível gratuito)
+Executar instância
+
+--- CONECTAR INSTÂNCIA AWS ---
+EC2 / Instâncias / Selecionar instância / Ações / Conectar
+- Connection type: IP público
+- Endereço IPv4 público: selecionar (guardar IPv4 para acesso futuro)
+Conectar
+
+--- OPERAR INSTÂNCIA AWS ---
+Na instância EC2 Ubuntu CLI, executar comandos:
+- sudo apt update && sudo apt install nginx -y && sudo systemctl enable nginx --now && sudo su
+- echo '&lt;h1&gt;Servidor EC2 UB Social&lt;/h1&gt;' &gt; /var/www/html/index.html
+
+--- ACESSAR INSTÂNCIA AWS ---
+- Acessar no browser: http://IPv4-PUBLICO-INSTANCIA
+- Via Linux: ssh -i "sua-chave.pem" ubuntu@DNS-PUBLICO-INSTANCIA
+</code></pre></small>
+
+            <br><h4>Publicar container na AWS:</h4>
+            <p id="textoPost">Publicar container nginx na AWS via Amazon Elastic Container Service (ECS) e Amazon Elastic Container Registry (ECR), com cluster Fargate.</p>
+<small><pre><code>
+--- CONTAINER NO HOST DOCKER ---
+1.Criar Dockerfile:
+FROM nginx:latest
+RUN rm -rf /usr/share/nginx/html/*
+RUN echo '&lt;h1&gt;UB Social&lt;/h1&gt;&lt;p&gt;Container com servidor nginx na AWS&lt;/p&gt;' &gt; /usr/share/nginx/html/index.html
+2.Criar Image e construir container:
+- docker build -t ubsocial/meu-nginx .
+- docker run -dti -p 8080:80 ubsocial/meu-nginx2
+3.Acessar nginx via host docker: curl http://localhost:8080
+
+--- CRIAR USUÁRIO AWS ---
+1.IAM / Usuários / Criar usuário
+- Nome: usuarioUB1
+- Fornecer acesso console AWS: habilitar
+- Tipo: Quero criar usuário do IAM
+- Senha do console: Senha gerada automaticamente
+Próximo
+- Permissões: Anexar políticas diretamente
+-- AmazonEC2ContainerRegistryFullAccess
+-- AmazonECS_FullAccess
+-- AdministratorAccess
+Próximo / Criar usuário / Baixar CSV
+2.Selecionar usuário / Habilitar acesso console FMA
+- Nome dispositivo: ubuntuTeste1
+- MFA device: Chave de acesso ou chave de segurança
+Próximo / Ativar via navegador
+3.Selecionar usuário / Criar chave de acesso
+- Tipo: CLI
+- Valor etiqueta descrição: Criar containers
+Criar chave de acesso / Baixar CSV
+
+--- INSTALAR AWS CLI ---
+1.curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+2.sudo apt update && sudo apt install -y unzip
+3.unzip awscliv2.zip
+4.sudo ./aws/install
+5.aws --version
+6.aws configure
+- informar keys geradas no CSV com dados de chave de acesso do usuário
+- região: sa-east-1
+- Default output format: json
+7.Login AWS CLI: aws ecr get-login-password --region sa-east-1 | docker login --username AWS --password-stdin ID-CONTA.dkr.ecr.sa-east-1.amazonaws.com
+
+--- PUBLICAR IMAGE NA AWS ---
+1.ECR / Repositórios / Criar repositório
+- Nome: ubsocial/meu-nginx
+- Etiqueta: Mutable
+Criar
+2.No host Docker, upload Image na AWS:
+- docker tag ubsocial/meu-nginx:latest ID-CONTA.dkr.ecr.sa-east-1.amazonaws.com/ubsocial/meu-nginx:latest
+- docker push ID-CONTA.dkr.ecr.sa-east-1.amazonaws.com/ubsocial/meu-nginx:latest
+
+--- CRIAR CLUSTER FARGATE ---
+ECS / Clusters / Criar cluster
+- Nome gerado automaticamente
+- Infraestrutura: AWS Fargate (sem servidor)
+Criar
+
+--- CRIAR DEFINIÇÃO DE TAREFA ---
+ECS / Definições de tarefa / Criar nova definição de tarefa
+- Família: familia-task
+- Tipo de inicialização: AWS Fargate
+- CPU: .25vCPU
+- Memória: .5GB
+Container 1:
+- Nome: meu-nginx-container
+- URI da imagem: ID-CONTA.dkr.ecr.sa-east-1.amazonaws.com/ubsocial/meu-nginx:latest
+- Porta do container: 80
+Criar
+
+--- CRIAR SERVIÇO FARGATE ---
+ECS / Clusters / Selecionar cluster / Aba serviços / Criar
+- Família da definição de tarefa: familia-task
+- Nome do serviço gerado automaticamente
+- Provedor de capacidade: Fargate (padrão)
+- Tarefas desejadas: 1 (padrão)
+- Rede VPC: padrão
+- Sub-redes: padrão
+- IP público: habilitar (padrão)
+Criar
+
+--- HABILITAR ACESSO AO CONTAINER AWS ---
+ECS / Clusters / Selecionar cluster / Aba Serviços / Tarefas / Selecionar tarefa
+- Aba Redes: clicar no ID da ENI
+- Na ENI: clicar no grupo de segurança
+- No grupo de segurança: editar regras de entrada (adicionar nova regra)
+-- Tipo: HTTP
+-- Protocolo: TCP (padrão)
+-- Intervalo de portas: 80 (padrão)
+-- Origem: Qualquer local-IPv4
+-- 0.0.0.0/0
+Salvar regras
+
+--- ACESSAR CONTAINER AWS ---
+ECS / Clusters / Selecionar cluster / Aba Serviços / Tarefas / Selecionar tarefa
+- Aba Associações de rede: Copiar IP-AWS
+- No host docker: curl http://IP-AWS
+
+--- Exclusões ---
+1.ECS / Clusters / Selecionar cluster / Excluir cluster
+2.ECS / Definições de tarefa / Selecionar definição / familia-task / Ações / Cancelar registro
+3.ECR / Repositórios / Selecionar repositório / Excluir
+4.IAM / Usuários / Selecionar usuário / Excluir (desativar chave de acesso, e confirmar exclusão)
+5.Apagar dados locais no host docker (images, container, Dockerfile)
+</code></pre></small>
+
+            <br><h4>Publicar projeto RESTful fullstack AWS:</h4>
+            <p id="textoPost">Publicar projeto RESTful fullstack, com frontend Vue.js e backend Django, via criação de instância EC2 (Ubuntu).</p>
+<small><pre><code>
+--- CRIAR INSTÂNCIA AWS ---
+EC2 / Instâncias / Executar instâncias
+- Nome: ubuntuDjangoTeste1
+- AMI: Ubuntu Server (nível gratuito)
+- Tipo: t3.micro (verificar se região é t2 ou t3 nível gratuito)
+- Criar par de chaves:
+-- Nome: keyDjangoTeste1
+-- Tipo: RSA
+-- Formato: conforme SO de sua máquina
+- Rede:
+-- Atribuir IP público automaticamente: habilitar
+-- Grupo de segurança criado automaticamente, com regras:
+--- Permitir tráfego HTTP qualquer lugar
+--- Permitir tráfego HTTPS qualquer lugar
+--- Permitir tráfego SSH qualquer lugar
+- Armazenamento: 8GB (nível gratuito)
+Criar
+
+--- CRIAR E ATRIBUIR GRUPO DE SEGURANÇA ---
+EC2 / Grupos de segurança / Criar grupo de segurança
+- Nome: grupoSegurancaTeste1
+- Descrição: Grupo de seguranca para testes 1
+- Regras de entrada:
+-- SSH: porta 22, IP 0.0.0.0/0
+-- HTTP: porta 80, IP 0.0.0.0/0
+-- Personalizado TCP: porta 8000 (porta Django), IP 0.0.0.0/0
+-- Personalizado TCP: porta 5173 (porta Vue.js), IP 0.0.0.0/0
+Criar
+
+EC2 / Instâncias / Selecionar instância / Ações / Segurança
+- Alterar grupos de segurança para grupoSegurancaTeste1
+Confirmar Executar instância (guardar IPv4 para acesso futuro)
+
+--- CONECTAR INSTÂNCIA AWS ---
+EC2 / Instâncias / Selecionar instância / Ações / Conectar CLI usando IP público (e executar comandos):
+- sudo apt update && sudo apt install python3-pip npm python3-venv git -y && sudo pip3 install django djangorestframework markdown django-filter django-cors-headers pytest pytest-django pytest-html model_bakery --break-system-packages && sudo npm install -g @vue/cli
+- curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt install nodejs -y
+- git clone https://github.com/mateusschwede/cafe_fullstack.git && cd cafe_fullstack/paris_cafe
+- python3 manage.py migrate
+- nano paris_cafe/settings.py (informar conteúdo abaixo):
+ALLOWED_HOSTS = [
+    'ec2-54-233-2-156.sa-east-1.compute.amazonaws.com', // IPv4 da instância EC2
+    'localhost',
+    '127.0.0.1',
+]
+
+- cd ../ && python3 manage.py runserver 0.0.0.0:8000 &
+-- Enter para sair do comando iterativo (servidor Django executando em background nohup)
+- cd ../cafe-frontend
+- sudo npm install
+- nano vite.config.ts (informar conteúdo abaixo):
+export default defineConfig(&#123;
+    // outro conteúdo
+    server: &#123;
+        host: '0.0.0.0',
+        port: 5173,
+        allowedHosts: [
+            'ec2-54-233-2-156.sa-east-1.compute.amazonaws.com' // IPv4 da instância EC2
+        ]
+    &#125;
+&#125;)
+
+- nano src/services/api.ts (informar conteúdo abaixo):
+// outro conteúdo
+baseURL: 'http://ec2-54-233-2-156.sa-east-1.compute.amazonaws.com:8000' // IPv4 da instância EC2
+
+- sudo npx vite --host
+-- Acessar API REST backend Django: http://ipv4_aws:8000
+-- Acessar projeto no browser: http://ipv4_aws:5173
+
+--- Exclusões ---
+1.EC2 / Instâncias / Selecionar instância / Ações / Estado da instância / Encerrar instância
+2.EC2 / Grupos de segurança / Selecionar grupoSegurancaTeste1 / Excluir
+3.EC2 / Chaves de acesso / Selecionar ubuntuDjangoTeste1-key.pem / Excluir
+</code></pre></small>
+        </div>
+    </div>
+
+
+<!--Rodapé-->
+<div class="row">
+    <div class="col-sm-12 text-center bg-black text-light pt-4 pb-3">
+        <p>Elaborado por Mateus Schwede<br><small class="text-muted">ubsocial.github.io</small></p>
+    </div>
+</div>
+
+</div>
+</body>
+</html>

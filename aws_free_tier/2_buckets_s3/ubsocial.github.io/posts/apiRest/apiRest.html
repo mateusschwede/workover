@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="../../icons/logoTit.png">
+    <link rel="stylesheet" href="../../estilo.css">
+    <title>UB Social</title>
+</head>
+<body>
+<div class="container-fluid">
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            <nav class="navbar rounded-bottom fixed-top navbar-expand-lg navbar-light bg-light shadow">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="../../index.html"><img src="../../icons/logo.png" class="d-inline-block align-text-top" width="11pt"> UB Social</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item"><a class="nav-link" href="../../index.html">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../sobre/sobre.html">Sobre</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../cursos.html">Cursos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../livros/livros.html">Livros</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 text-center" id="titulo">
+            <h1>API, REST, RESTful</h1>
+            <h6><strong>Conceitos e exemplo prático</strong></h6>
+            <a href="../../index.html" class="btn btn-link text-decoration-none mb-3">Voltar</a>
+        </div>
+
+        <div class="col-sm-12">
+            <h4>API:</h4>
+            <p id="textoPost">Application Programming Interface tem função de intermediar comunicação universal entre diferentes sistemas, assim como do banco de dados com o próprio sistema (interno ou externo), utilizando protocolo de comunicação HTTP (XML/JSON), requisitados via URL específica, independente da tecnologia do sistema que irá consumí-la (acessá-la).</p>
+            <ul>
+                <li>URL: <span class="text-muted">http://www.sistema.com</span></li>
+                <li>URL + <b>URI</b>: <span class="text-muted">http://www.sistema.com/<b>api/produtos</b></span></li>
+                <li>Endpoint coleção: <span class="text-muted">/api/produtos</span></li>
+                <li>Endpoint individual: <span class="text-muted">/api/produtos/2</span></li>
+            </ul>
+
+            <br><h4>Estrutura de URL:</h4>
+            <img src="estrutura_url.jpg" class="img-fluid rounded" width="330px"><br>
+
+            <br><h4>REST:</h4>
+            <p id="textoPost">Representational State Transfer. Técnica que consiste em princípios que, quando seguidos, permitem a criação de projetos (web services) com interfaces/arquitetura bem definidas (padrão REST), utilizando novos métodos/verbos REST HTTP:</p>
+            <ul>
+                <li>POST: Create
+                    <ul class="text-muted">
+                        <li class="text-decoration-line-through">/api/produtos</li>
+                        <li>/api/produtos/42 (requer body(XML-JSON) no header request)</li>
+                    </ul>
+                </li>
+                <br><li>GET: Read
+                    <ul class="text-muted">
+                        <li>/api/produtos</li>
+                        <li>/api/produtos/42</li>
+                    </ul>
+                </li>
+                <br><li>PUT: Update
+                    <ul class="text-muted">
+                        <li>/api/produtos (requer body(XML-JSON) no header request)</li>
+                        <li class="text-decoration-line-through">/api/produtos/42</li>
+                    </ul>
+                </li>
+                <br><li>DELETE: Delete
+                    <ul class="text-muted">
+                        <li class="text-decoration-line-through">/api/produtos</li>
+                        <li>/api/produtos/42</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>Nativamente, o HTTP é <i>Stateless</i> (Não guarda estado). Com o uso de REST, permitirá que as requisições HTTP armazenem dados (estados). Os Web services que estão em conformidade com o estilo arquitetural REST são denominados Web services <b>RESTful</b>. Um sistema é considerado RESTful quando segue corretamente o padrão REST.</p>
+
+            <br><h4>HTTP Request e Response:</h4>
+            <br><b>Request:</b>
+            <p>Requisição HTTP do dispositivo ao servidor web. Incluem dados de pares chave/valor na URI (query string).<br>Ex: /api/produtos<b>?order=desc&limit=5</b></p>
+            
+            Header da request:
+            <ul>
+                <li><u>Accept</u>: Especifica formato do arquivo desejado pelo requester
+                    <ul>
+                        <li class="text-muted">Accept: application/xml</li>
+                        <li class="text-muted">Accept: application/json</li>
+                        <li class="text-muted">Accept: application/pdf</li>
+                    </ul>
+                </li>
+                <li><u>Accept-Language</u>: Idioma do conteúdo</li>
+                <li><u>Cache-Control</u>: Conteúdo pode ser consumido do cache e o tempo em que o cache é atualizado</li>
+            </ul>
+            <p>Versão da API: /api/v1/produtos</p>
+
+            <br><b>Response:</b>
+            <p>Resposta HTTP do servidor web ao dispositivo, sob sua requisição.</p>
+            <ul>
+                <li>Na requisição existe query string?</li>
+                <li>Qual foi o verbo HTTP que realizou a ação?</li>
+                <li>Quais os dados do header?</li>
+                <li>Qual o formato requisitado?</li>
+                <li>Quais dados da coleção ou indivíduo do recurso solicitado precisam ser enviados?</li>
+            </ul>
+            
+            Header da response:
+            <ul>
+                <li><u>Content-Type</u>: text/javascript (Formato de dado conforme requisitado)</li>
+                <li><u>Last-Modified</u>: Tue, 15 Jan 2023 12:45:26 GMT</li>
+                <li><u>Expires</u>: Thu, 22 Jan 2023 16:00:00 GTM</li>
+                <li><u>Status</u>: 200 OK (Código de status HTTP)</li>
+            </ul>
+            
+            <br><b>HTTP Status Codes:</b>
+            <ul>
+                <li><u>1XX</u>: Informational <span class="text-muted">(100 a 199)</span></li>
+                <li><u>2XX</u>: Success
+                    <ul class="text-muted">
+                        <li>200: Consulta encontrada no server</li>
+                        <li>201/202: Criação de novo recurso com sucesso</li>
+                    </ul>
+                </li>
+                <li><u>3XX</u>: Redirection
+                    <ul class="text-muted">
+                        <li>300: Requisição HTTP foi entendida, mas o recurso encontra-se em outra URI</li>
+                    </ul>
+                </li>
+                <li><u>4XX</u>: Client Error
+                    <ul class="text-muted">
+                        <li>404: URI informada incorretamente (Not Found)</li>
+                        <li>405 e 403: URI pode ser requisitada apenas com verbo GET/POST</li>
+                    </ul>
+                </li>
+                <li><u>5XX</u>: Server Error
+                    <ul class="text-muted">
+                        <li>500: Requisição realizada, mas houve erro no lado do servidor (Server Error)</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <br><h4>Segurança em APIs:</h4>
+            <ul>
+                <li>Uso de cache para requests: Cliente faz requisição ao servidor, que enviará a resposta e a armazenará em memória. As próximas requisições similares consultarão diretamente o cache, dispensando acesso ao servidor todas as vezes. O Redis é um exemplo de ferramenta que constrói tal estrutura.</li>
+                <li>Limitar quantidade de requests no servidor para evitar queda do mesmo.</li>
+                <li>Promover autenticação e autorização de acesso, aderindo Tokens, via Public Key enviada no Header da Request para autenticação e acesso ao servidor.
+                    <ul>
+                        <li>Authorization: <i>What you can do</i></li>
+                        <li>Authentication: <i>Who are you</i></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <br><hr><p class="text-muted mb-4">Exemplo prático</p>
+            <p id="textoPost">Aplicação Front-end envia requisição HTTP com métodos REST para Back-end, que, de acordo com a URL, realizará determinadas rotinas e gerará um JSON de resposta com os resultados da requisição. Essa requisição, geralmente, será reenviada ao Front-end, que o 'consumirá' em um layout interativo ao usuário.</p>
+            <p id="textoPost"><u>Exemplo consultar dados de cliente</u>: Usuário clica em Consultar Cliente, que enviará URL requisitando dados do cliente ao Back-end. Conforme parâmetros na URI requisitada (ID do usuário, URL via método GET) (Request), dinâmica e denominada <i>endpoint</i>, com isso, o Back-end, por meio da API REST (Métodos e padrões de código) com Laravel, consultará BD e criará JSON com resultado dos dados do cliente solicitado e o enviará de volta ao Front-end (Response), que lerá o JSON (Consumir API REST) com React, mostrando os dados do cliente em interface gráfica agradável para o usuário.</p>
+
+            <br><h4>Pré-instalações:</h4>
+            <ol>
+                <li>Instalar Laravel: <a href="../laravel/laravel.html" class="text-decoration-none" target="_blank">Instruções</a></li>
+                <li>Instalar Postman: <a href="../post22.html" class="text-decoration-none" target="_blank">Instruções</a></li>
+                <li>Criar BD: Iniciar Apache e MySQL XAMPP e, no Phpmyadmin, criar BD: '<i>CREATE DATABASE artigos;</i>'</li>
+                <li>Criar projeto Laravel: '<i>composer create-project --prefer-dist laravel/laravel laravelApiRest</i>'</li>
+                <li>Configurar BD em .env: '<i>DB_DATABASE=artigos</i>'</li>
+            </ol>
+
+            <br><h4>Passo a passo:</h4>
+            <a href="https://github.com/mateusschwede/laravel" class="text-decoration-none btn btn-link" target="_blank">Github projeto</a>
+            <ol>
+                <li>Criar Model, migration e Controller: <i>php artisan make:model Artigo -m php artisan make:controller ArtigoController --resource</i></li>
+                <li>Configurar Migration create_artigos_table.php (Após código, realizar comando '<i>php artisan migrate</i>')</li>
+<small><pre><code>
+&lt;?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateArtigosTable extends Migration {
+
+    public function up() {
+        Schema::create('artigos', function (Blueprint $table) {
+            $table-&gt;id();
+            $table-&gt;string('titulo');
+            $table-&gt;text('conteudo');
+            $table-&gt;timestamps();
+        });
+    }
+
+    public function down() {
+        Schema::dropIfExists('artigos');
+    }
+}
+</code></pre></small>
+                <li>Definir Controller ArtigoController</li>
+<small><pre><code>
+&lt;?php
+namespace App\Http\Controllers;
+use App\Models\Artigo as Artigo;
+use App\Http\Resources\Artigo as ArtigoResource;
+use Illuminate\Http\Request;
+
+class ArtigoController extends Controller {
+
+    public function index() {
+        $artigos = Artigo::paginate(15);
+        return ArtigoResource::collection($artigos);
+    }
+
+    public function show($id) {
+        $artigo = Artigo::findOrFail( $id );
+        return new ArtigoResource($artigo);
+    }
+
+    public function store(Request $request) {
+        $artigo = new Artigo;
+        $artigo-&gt;titulo = $request-&gt;input('titulo');
+        $artigo-&gt;conteudo = $request-&gt;input('conteudo');
+
+        if($artigo-&gt;save()) {
+            return new ArtigoResource($artigo);
+        }
+    }
+
+    public function update(Request $request) {
+        $artigo = Artigo::findOrFail($request-&gt;id);
+        $artigo-&gt;titulo = $request-&gt;input('titulo');
+        $artigo-&gt;conteudo = $request-&gt;input('conteudo');
+
+        if(artigo-&gt;save()) {
+            return new ArtigoResource($artigo);
+        }
+    } 
+
+    public function destroy($id) {
+        $artigo = Artigo::findOrFail($id);
+        if($artigo-&gt;delete()) {
+            return new ArtigoResource($artigo);
+        }
+    }
+}
+</code></pre></small>
+                <li>Criar Routes em routes/api.php</li>
+<small><pre><code>
+&lt;?php
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ArtigoController;
+
+Route::middleware('auth:api')-&gt;get('/user', function (Request $request) {
+    return $request-&gt;user();
+});
+
+Route::get('artigos',[ArtigoController::class,'index']); //Listar artigos
+Route::get('artigo/{id}',[ArtigoController::class,'show']); //Ver artigo
+Route::post('artigo',[ArtigoController::class,'store']); //Criar artigo
+Route::put('artigo/{id}',[ArtigoController::class,'update']); //Editar artigo
+Route::delete('artigo/{id}',[ArtigoController::class,'destroy']); //Excluir artigo
+</code></pre></small>
+                <li>Criar Resource em app/Http/Resources/Artigo.php: '<i>php artisan make:resource Artigo</i>'</li>
+<small><pre><code>
+&lt;?php
+namespace App\Http\Resources;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class Artigo extends JsonResource {
+
+    public function toArray($request){
+        //return parent::toArray($request);
+        return [
+            'id' =&gt; $this-&gt;id,
+            'titulo' =&gt; $this-&gt;titulo,
+            'conteudo' =&gt; $this-&gt;conteudo
+        ];
+    }
+
+    /* public function with( $request ){
+        return [
+            'version' =&gt; '1.0.0',
+            'author_url' =&gt; url('https://ubsocial.github.io')
+        ];
+    } */
+}
+</code></pre></small>
+                <li>Executar projeto Laravel: '<i>php artisan serve</i>' (<a href="http://localhost:8000" class="text-decoration-none" target="_blank">http://localhost:8000</a>)</li>
+                
+                <br><h5>Testes no Postman</h5>
+                <img src="postman.png" class="img-fluid rounded" width="500px">
+                <li>No Postman, testar API para inserir artigo: (Deverá retornar JSON e inserir no BD)<span class="text-muted"><br>POST: <a href="http://localhost:8000/api/artigo" class="text-decoration-none" target="_blank">http://localhost:8000/api/artigo</a><br>(Headers)<br>Key: Content-Type<br>Value: application/json<br>(Body raw) (Enviar 1 bloco de chaves por vez)</span></li>
+<small><pre><code>
+{
+    "titulo": "Primeiro artigo pelo Postman",
+    "conteudo": "Descrição desse artigo de número um."
+}
+
+{
+    "titulo": "Segundo artigo pelo Postman",
+    "conteudo": "Descrição desse artigo de número dois."
+}
+
+{
+    "titulo": "Terceiro artigo pelo Postman",
+    "conteudo": "Descrição desse artigo de número três."
+}
+</code></pre></small>
+                <li>No Postman, testar API para listar artigos: (Mostrará em data no JSON)<br><span class="text-muted">GET: <a href="http://localhost:8000/api/artigos" class="text-decoration-none" target="_blank">http://localhost:8000/api/artigos</a></span></li>
+                <li>No Postman, testar API para ver somente o 1º artigo:<br><span class="text-muted">GET: <a href="http://localhost:8000/api/artigo/1" class="text-decoration-none" target="_blank">http://localhost:8000/api/artigo/1</a></span></li>
+                <li>No Postman, testar API para editar o artigo 1:<br><span class="text-muted">PUT: <a href="http://localhost:8000/api/artigo/1" class="text-decoration-none" target="_blank">http://localhost:8000/api/artigo/1</a><br>(Headers)<br>Key: Content-Type<br>Value: application/json<br>(Body raw)</span></li>
+<small><pre><code>
+{
+    "titulo": "ATUALIZANDO Primeiro artigo pelo Postman",
+    "conteudo": "Descrição desse artigo de número um sendo ATUALIZADO."
+}
+</code></pre></small>
+                <li>No Postman, testar API para remover o artigo 1:<br><span class="text-muted">DELETE: <a href="http://localhost:8000/api/artigo/1" class="text-decoration-none" target="_blank">http://localhost:8000/api/artigo/1</a></span></li>
+            </ol>
+        </div>
+    </div>
+
+
+<!--Rodapé-->
+<div class="row">
+    <div class="col-sm-12 text-center bg-black text-light pt-4 pb-3">
+        <p>Elaborado por Mateus Schwede<br><small class="text-muted">ubsocial.github.io</small></p>
+    </div>
+</div>
+
+</div>
+</body>
+</html>

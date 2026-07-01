@@ -1,0 +1,14 @@
+#titulo {padding-top: 80px;}
+#textoPost {text-align: justify;}
+#workover {background: linear-gradient(to left, #6a5fff, #b1469f);}
+
+/* Especial Disney */
+@font-face {
+    font-family: 'disney';
+    src: url('posts/disney/disneyTituloFont.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'disney2';
+    src: url('posts/disney/disney2.otf') format('opentype');
+}

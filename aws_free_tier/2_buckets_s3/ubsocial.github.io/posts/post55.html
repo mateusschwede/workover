@@ -1,0 +1,1183 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="../icons/logoTit.png">
+    <link rel="stylesheet" href="../estilo.css">
+    <title>UB Social</title>
+</head>
+<body>
+<div class="container-fluid">
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            <nav class="navbar rounded-bottom fixed-top navbar-expand-lg navbar-light bg-light shadow">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="../index.html"><img src="../icons/logo.png" class="d-inline-block align-text-top" width="11pt"> UB Social</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../sobre/sobre.html">Sobre</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../cursos.html">Cursos</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../livros/livros.html">Livros</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 text-center" id="titulo">
+            <h1>Projeto cafe fullstack Django e Vue.js</h1>
+            <h6><strong>Criação de projeto de cafe fullstack Django, Vue.js, Postman e Bootstrap</strong></h6>
+            <a href="../index.html" class="btn btn-link text-decoration-none mb-3">Voltar</a>
+        </div>
+
+        <div class="col-sm-12">
+            <h4>Material complementar:</h4>
+            <ul>
+                <li>Conteúdo no YouTube: <a target="_blank" class="text-decoration-none">Acesse em breve</a></li>
+                <li>Conteúdo no GitHub: <a href="https://github.com/mateusschwede/cafe_fullstack" target="_blank" class="text-decoration-none">Acesse</a></li>
+                <li>Curso com certificado na Workover Academy (Desenvolvimento Fullstack com Django e Vue.js): <a href="https://workover.com.br/cursos/1874/desenvolvimento-fullstack-com-django-e-vuejs" target="_blank" class="text-decoration-none">Acesse</a></li>
+            </ul>
+
+            <br><h4>Conceito:</h4>
+            <p id="textoPost">Criar sistema web RESTful fullstack, com backend Django REST Framework - DRF (viewsets e routers) e frontend Vue.js TypeScript (vue router), com funções de CRUD (criar, listar, ver específico, editar e excluir) de cafés Parisienses. Testes através do Postman, estilização frontend através do Bootstrap (Bootstrap vue next). Possui os projetos "paris_cafe" (backend Django REST Framework) e "cafe_frontend" (frontend Vue.js TypeScript) integrados como sistema RESTful fullstack.</p>
+
+            <br><h4>Backend (Django REST Framework):</h4>
+            <ol>
+                <li>Criar projeto DRF:
+<small><pre><code>
+pip3 install django djangorestframework markdown django-filter django-cors-headers pytest pytest-django pytest-html model_bakery --break-system-packages
+django-admin startproject paris_cafe
+cd paris_cafe
+python manage.py startapp cafes
+</code></pre></small>
+                </li>
+                <li>Em paris_cafe/settings.py, informar conteúdo faltante:
+<small><pre><code>
+INSTALLED_APPS = [
+    # Outro conteúdo
+    'rest_framework',
+    'corsheaders',
+    'cafes',
+]
+
+MIDDLEWARE = [
+    # Outro conteúdo
+    'corsheaders.middleware.CorsMiddleware',
+]
+
+REST_FRAMEWORK = &#123;
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ]
+&#125;
+
+CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = [
+#    "http://localhost:8080",
+# ]
+</code></pre></small>
+                </li>
+                <li>Em cafes/models.py, criar Model Cafeteria:
+<small><pre><code>
+from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
+
+class Cafeteria(models.Model):
+    nome = models.CharField(max_length=255)
+    data_inauguracao = models.DateField()
+    endereco = models.CharField(max_length=255)
+    avaliacao = models.FloatField(validators=[MinValueValidator(0.0), MaxValueValidator(10.0)])
+
+    def __str__(self):
+        return f"&#123;self.nome&#125; (&#123;self.avaliacao&#125;/10)"
+</code></pre></small>
+                </li>
+                <li>Em cafes/serializers.py, criar arquivo de serializadores:
+<small><pre><code>
+from rest_framework import serializers
+from .models import Cafeteria
+
+class CafeteriaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cafeteria
+        fields = '__all__'
+</code></pre></small>
+                </li>
+                <li>Em cafes/views.py, criar viewsets:
+<small><pre><code>
+from rest_framework import viewsets
+from .models import Cafeteria
+from .serializers import CafeteriaSerializer
+
+class CafeteriaViewSet(viewsets.ModelViewSet):
+    queryset = Cafeteria.objects.all()
+    serializer_class = CafeteriaSerializer
+</code></pre></small>
+                </li>
+                <li>Em cafes/urls.py, criar arquivo de routes locais:
+<small><pre><code>
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import CafeteriaViewSet
+
+router = DefaultRouter()
+router.register(r'cafes', CafeteriaViewSet)
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
+</code></pre></small>
+                </li>
+                <li>Em paris_cafe/urls.py, editar arquivo de routes globais:
+<small><pre><code>
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('cafes.urls')),
+]
+</code></pre></small>
+                </li>
+                <li>Executar projeto:
+<small><pre><code>
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+</code></pre></small>
+                </li>
+                <li>Acessar projeto: <a href="http://localhost:8000/cafes/" target="_blank" class="text-decoration-none">http://localhost:8000/cafes/</a></li>
+            </ol>
+
+            <br><h4>Testes no Postman:</h4>
+            <ol>
+                <li>Listar cafeterias (GET list):
+                    <ul>
+                        <li>URL: <a href="http://localhost:8000/cafes/" target="_blank" class="text-decoration-none">http://localhost:8000/cafes/</a></li>
+                        <li>Método: GET</li>
+                        <li>Send (enviar)</li>
+                    </ul>
+                </li>
+                <li>Ver cafeteria 1 (GET detail):
+                    <ul>
+                        <li>URL: <a href="http://localhost:8000/cafes/1/" target="_blank" class="text-decoration-none">http://localhost:8000/cafes/1/</a></li>
+                        <li>Método: GET</li>
+                        <li>Send (enviar)</li>
+                    </ul>
+                </li>
+                <li>Adicionar cafeteria (POST create):
+                    <ul>
+                        <li>URL: <a href="http://localhost:8000/cafes/" target="_blank" class="text-decoration-none">http://localhost:8000/cafes/</a></li>
+                        <li>Método: POST</li>
+                        <li>Body (JSON):
+<small><pre><code>
+&#123;
+    "nome": "Les Deux Magots",
+    "data_inauguracao": "1884-01-01",
+    "endereco": "6 Pl. Saint-Germain des Prés, 75006 Paris, França",
+    "avaliacao": 9.8
+&#125;
+</code></pre></small>
+                        </li>
+                        <li>Send (enviar)</li>
+                    </ul>
+                </li>
+                <li>Editar cafeteria 1 (PUT update):
+                    <ul>
+                        <li>URL: <a href="http://127.0.0.1:/cafes/1/" target="_blank" class="text-decoration-none">http://127.0.0.1:/cafes/1/</a></li>
+                        <li>Método: PUT</li>
+                        <li>Body (JSON):
+                            <small><pre><code>
+&#123;
+    "nome": "Les Deux Magots ATUALIZADO",
+    "data_inauguracao": "1884-01-01",
+    "endereco": "6 Pl. Saint-Germain des Prés, 75006 Paris, França",
+    "avaliacao": 9.8
+&#125;
+                            </code></pre></small>
+                        </li>
+                        <li>Send (enviar)</li>
+                    </ul>
+                </li>
+                <li>Excluir cafeteria 1 (DELETE):
+                    <ul>
+                        <li>URL: <a href="http://127.0.0.1:/cafes/1/" target="_blank" class="text-decoration-none">http://127.0.0.1:/cafes/1/</a></li>
+                        <li>Método: DELETE</li>
+                        <li>Send (enviar)</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <br><h4>Frontend (Vue.js):</h4>
+            <ol>
+                <li>Criar projeto Vue.js:
+<small><pre><code>
+npm install -g @vue/cli
+npm init vue@latest =&gt; Nome: cafe-frontend, Escolha: TypeScript, Router (SPA development)
+cd cafe-frontend
+npm install axios bootstrap bootstrap-vue-next --save-dev cypress ts-node @cypress/webpack-dev-server vitest @vitest/ui jsdom @vue/test-utils
+</code></pre></small>
+                </li>
+                <li>Em src/components/CafeItem.vue, criar componente item de cafeteria:
+<small><pre><code>
+&lt;template&gt;
+    &lt;b-card class="mb-2"&gt;
+        &lt;div class="d-flex justify-content-between align-items-center"&gt;
+            &lt;div&gt;
+                &lt;h5&gt;&#123;&#123; cafe.nome &#125;&#125;&lt;/h5&gt;
+                &lt;p class="mb-0"&gt;Avaliação: &#123;&#123; cafe.avaliacao &#125;&#125;/10&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+                &lt;router-link :to="`/view/$&#123;cafe.id&#125;`" class="btn btn-sm btn-primary me-1"&gt;Ver&lt;/router-link&gt;
+                &lt;router-link :to="`/edit/$&#123;cafe.id&#125;`" class="btn btn-sm btn-warning me-1"&gt;Editar&lt;/router-link&gt;
+                &lt;b-button size="sm" variant="danger" @click="$emit('delete', cafe.id)"&gt;Deletar&lt;/b-button&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/b-card&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+defineProps&lt;&#123; cafe: any &#125;&gt;()
+defineEmits(['delete'])
+&lt;/script&gt;
+</code></pre></small>
+                </li>
+                <li>Em src/router/index.ts, adicionar rotas:
+<small><pre><code>
+import &#123; createRouter, createWebHistory &#125; from 'vue-router'
+import Home from '../views/Home.vue'
+import AddCafe from '../views/AddCafe.vue'
+import EditCafe from '../views/EditCafe.vue'
+import ViewCafe from '../views/ViewCafe.vue'
+
+const routes = [
+    &#123; path: '/', name: 'Home', component: Home &#125;,
+    &#123; path: '/add', name: 'AddCafe', component: AddCafe &#125;,
+    &#123; path: '/edit/:id', name: 'EditCafe', component: EditCafe &#125;,
+    &#123; path: '/view/:id', name: 'ViewCafe', component: ViewCafe &#125;
+]
+
+export default createRouter(&#123;
+    history: createWebHistory(),
+    routes
+&#125;)
+</code></pre></small>
+                </li>
+                <li>Em src/services/api.ts, informar URL API backend:
+<small><pre><code>
+import axios from 'axios'
+
+const api = axios.create(&#123;
+    baseURL: 'http://127.0.0.1:8000/',
+&#125;)
+
+export default api
+</code></pre></small>
+                </li>
+                <li>Em src/views/AddCafe.vue, criar tela de cadastro de cafeteria:
+<small><pre><code>
+&lt;template&gt;
+    &lt;div class="container mt-4"&gt;
+        &lt;h2&gt;Adicionar Cafeteria:&lt;/h2&gt;
+        &lt;b-form @submit.prevent="addCafe"&gt;
+            &lt;b-form-input v-model="form.nome" placeholder="Nome" name="nome" class="mb-2" maxlength="255" required /&gt;
+            &lt;b-form-input v-model="form.data_inauguracao" type="date" name="data_inauguracao" class="mb-2" :max="new Date().toLocaleDateString('sv-SE')" required /&gt;
+            &lt;b-form-textarea v-model="form.endereco" placeholder="Endereço" name="endereco" class="mb-2" maxlength="255" required /&gt;
+            &lt;b-form-input v-model.number="form.avaliacao" type="number" step="0.01" min="0" max="10" name="avaliacao" class="mb-2"
+                required /&gt;
+            &lt;b-button type="submit" variant="success" class="me-2"&gt;Confirmar&lt;/b-button&gt;
+            &lt;router-link to="/" class="btn btn-secondary"&gt;Cancelar&lt;/router-link&gt;
+        &lt;/b-form&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+import &#123; ref &#125; from 'vue'
+import &#123; useRouter &#125; from 'vue-router'
+import api from '../services/api'
+
+const router = useRouter()
+const form = ref(&#123; nome: '', data_inauguracao: '', endereco: '', avaliacao: 0 &#125;)
+
+const addCafe = async () =&gt; &#123;
+    await api.post('cafes/', form.value)
+    router.push('/')
+&#125;
+&lt;/script&gt;
+</code></pre></small>
+                </li>
+                <li>Em src/views/EditCafe.vue, criar tela edição de cafeteria:
+<small><pre><code>
+&lt;template&gt;
+    &lt;div class="container mt-4"&gt;
+        &lt;h2&gt;Editar Cafeteria &#123;&#123; form.id &#125;&#125;:&lt;/h2&gt;
+        &lt;b-form @submit.prevent="updateCafe"&gt;
+            &lt;b-form-input v-model="form.nome" name="nome" class="mb-2" maxlength="255" required /&gt;
+            &lt;b-form-input v-model="form.data_inauguracao" type="date" name="data_inauguracao" class="mb-2" :max="new Date().toLocaleDateString('sv-SE')" required /&gt;
+            &lt;b-form-textarea v-model="form.endereco" name="endereco" class="mb-2" maxlength="255" required /&gt;
+            &lt;b-form-input v-model.number="form.avaliacao" type="number" step="0.01" min="0" max="10" name="avaliacao" class="mb-2"
+                required /&gt;
+            &lt;b-button type="submit" variant="success" class="btn btn-success me-2"&gt;Confirmar&lt;/b-button&gt;
+            &lt;router-link to="/" class="btn btn-secondary"&gt;Cancelar&lt;/router-link&gt;
+        &lt;/b-form&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+import &#123; ref, onMounted &#125; from 'vue'
+import &#123; useRoute, useRouter &#125; from 'vue-router'
+import api from '../services/api'
+
+const route = useRoute()
+const router = useRouter()
+const form = ref&lt;any&gt;(&#123;&#125;)
+
+onMounted(async () =&gt; &#123;
+    const &#123; data &#125; = await api.get(`cafes/$&#123;route.params.id&#125;/`)
+    form.value = data
+&#125;)
+
+const updateCafe = async () =&gt; &#123;
+    await api.put(`cafes/$&#123;route.params.id&#125;/`, form.value)
+    router.push('/')
+&#125;
+&lt;/script&gt;
+</code></pre></small>
+                </li>
+                <li>Em src/views/Home.vue, criar tela home:
+<small><pre><code>
+&lt;template&gt;
+    &lt;div class="container mt-4"&gt;
+        &lt;div class="d-flex justify-content-between align-items-center mb-4"&gt;
+            &lt;h1&gt;Cafés de Paris&lt;/h1&gt;
+            &lt;div&gt;
+                &lt;router-link to="/add" class="btn btn-success"&gt;Adicionar Cafeteria&lt;/router-link&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;button class="btn btn-sm btn-info me-2 mb-2" @click="toggleOrdenacao"&gt;
+            &#123;&#123; ordenado ? 'Ordenação original' : 'Ordenar por avaliação' &#125;&#125;
+        &lt;/button&gt;
+        &lt;CafeItem v-for="cafe in cafes" :key="cafe.id" :cafe="cafe" @delete="deleteCafe" /&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+import &#123; ref, onMounted &#125; from 'vue'
+import api from '../services/api'
+import CafeItem from '../components/CafeItem.vue'
+
+const cafes = ref&lt;any[]&gt;([])
+const cafesOriginais = ref&lt;any[]&gt;([])
+const ordenado = ref(false)
+
+const fetchCafes = async () =&gt; &#123;
+    const &#123; data &#125; = await api.get('cafes/')
+    cafesOriginais.value = [...data]
+    cafes.value = [...data]
+&#125;
+
+const deleteCafe = async (id: number) =&gt; &#123;
+    await api.delete(`cafes/$&#123;id&#125;/`)
+    await fetchCafes()
+    if (ordenado.value) &#123;
+        ordenarPorAvaliacao()
+    &#125;
+&#125;
+
+const ordenarPorAvaliacao = () =&gt; &#123;
+    cafes.value = [...cafes.value].sort((a, b) =&gt; b.avaliacao - a.avaliacao)
+&#125;
+
+const toggleOrdenacao = () =&gt; &#123;
+    if (!ordenado.value) &#123;
+        ordenarPorAvaliacao()
+    &#125; else &#123;
+        cafes.value = [...cafesOriginais.value]
+    &#125;
+    ordenado.value = !ordenado.value
+&#125;
+
+onMounted(fetchCafes)
+&lt;/script&gt;
+</code></pre></small>
+                </li>
+                <li>Em src/views/ViewCafe.vue, criar tela visualização de cafeteria:
+<small><pre><code>
+&lt;template&gt;
+    &lt;div class="container mt-4"&gt;
+        &lt;h2 class="mb-3"&gt;Cafeteria &#123;&#123; cafe?.id &#125;&#125;:&lt;/h2&gt;
+        &lt;p&gt;&lt;strong&gt;Nome:&lt;/strong&gt; &#123;&#123; cafe?.nome &#125;&#125;&lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;Inauguração:&lt;/strong&gt; &#123;&#123; cafe?.data_inauguracao.split('-').reverse().join('/') &#125;&#125;&lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;Endereço:&lt;/strong&gt; &#123;&#123; cafe?.endereco &#125;&#125;&lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;Avaliação:&lt;/strong&gt; &#123;&#123; cafe?.avaliacao &#125;&#125;/10&lt;/p&gt;
+        &lt;router-link to="/" class="btn btn-secondary mt-2"&gt;Voltar&lt;/router-link&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+import &#123; ref, onMounted &#125; from 'vue'
+import &#123; useRoute &#125; from 'vue-router'
+import api from '../services/api'
+
+const cafe = ref&lt;any&gt;(null)
+const route = useRoute()
+
+onMounted(async () =&gt; &#123;
+    const &#123; data &#125; = await api.get(`cafes/$&#123;route.params.id&#125;/`)
+    cafe.value = data
+&#125;)
+&lt;/script&gt;
+</code></pre></small>
+                </li>
+                <li>Em src/App.vue, criar index do projeto:
+<small><pre><code>
+&lt;template&gt;
+    &lt;router-view /&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;&lt;/script&gt;
+
+&lt;style&gt;&lt;/style&gt;
+</code></pre></small>
+                </li>
+                <li>Em src/main.ts, configurar dependências:
+<small><pre><code>
+import &#123; createApp &#125; from "vue";
+import App from './App.vue';
+import router from './router';
+import * as BootstrapVueNext from 'bootstrap-vue-next';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-vue-next/dist/bootstrap-vue-next.css';
+
+import &#123;
+    BButton,
+    BForm,
+    BFormInput,
+    BFormTextarea,
+    BCard
+&#125; from 'bootstrap-vue-next';
+
+const app = createApp(App);
+app.use(router);
+app.component('BButton', BButton);
+app.component('BForm', BForm);
+app.component('BFormInput', BFormInput);
+app.component('BFormTextarea', BFormTextarea);
+app.component('BCard', BCard);
+app.mount('#app');
+</code></pre></small>
+                </li>
+                <li>Executar projeto: npm run dev # ou 'npx vite'
+                    <ul>
+                        <li>Acessar projeto: <a href="http://localhost:5173" target="_blank" class="text-decoration-none">http://localhost:5173</a></li>
+                    </ul>
+                </li>
+            </ol>
+
+            <br><h4>Testes backend:</h4>
+            <ul>
+                <li>Teste unitário: verifica se unidade isolada do código (como função ou método) funciona corretamente;</li>
+                <li>Teste de integração: verifica se diferentes partes do sistema funcionam juntas corretamente;</li>
+                <li>Teste E2E (end-to-end): verifica se sistema funciona como um todo, simulando comportamento ao usuário final.</li>
+            </ul>
+            <p>Testes unitários e de integração, via pytest.</p>
+            <ol>
+                <li>Pasta do projeto backend, criar arquivo pytest.ini:
+<small><pre><code>
+[pytest]
+DJANGO_SETTINGS_MODULE = paris_cafe.settings
+python_files = tests.py test_*.py *_tests.py
+</code></pre></small>
+                </li>
+                <li>Em pasta App 'cafes', criar diretório tests/</li>
+                <li>Em tests/, criar arquivo conftest.py para uso de fixtures compartilhadas:
+<small><pre><code>
+import pytest
+from model_bakery import baker
+
+@pytest.fixture
+def cafe():
+    return baker.make("cafes.Cafeteria") # 'cafes' é nome da App do projeto
+</code></pre></small>
+                </li>
+                <li>Em tests/, criar diretório unit/ para testes unitários</li>
+                <li>Em tests/unit/, criar arquivo test_models.py para testar models:
+<small><pre><code>
+import pytest
+from cafes.models import Cafeteria
+
+@pytest.mark.django_db
+def test_cria_cafeteria():
+    cafe = Cafeteria.objects.create(
+        nome="Café do Centro",
+        data_inauguracao="2020-01-01",
+        endereco="Rua Principal, 123",
+        avaliacao=9.5,
+    )
+    assert cafe.nome == "Café do Centro"
+    assert cafe.avaliacao == 9.5
+</code></pre></small>
+                </li>
+                <li>Em tests/unit/, criar arquivo test_serializers.py para testar serializers:
+<small><pre><code>
+from cafes.serializers import CafeteriaSerializer
+
+def test_cafe_serializer_valid_data():
+    data = &#123;
+        "nome": "Café Central",
+        "data_inauguracao": "2021-01-01",
+        "endereco": "Av. Principal, 456",
+        "avaliacao": 8.7
+    &#125;
+    serializer = CafeteriaSerializer(data=data)
+    assert serializer.is_valid()
+    assert serializer.validated_data["nome"] == "Café Central"
+</code></pre></small>
+                </li>
+                <li>Em tests/, criar diretório integration/ para testes de integração</li>
+                <li>Em tests/integration/, criar arquivo test_views.py para testar views:
+<small><pre><code>
+import pytest
+from rest_framework.test import APIClient
+from model_bakery import baker
+
+@pytest.mark.django_db
+def test_lista_cafeterias():
+    baker.make("cafes.Cafeteria", _quantity=3)
+    client = APIClient()
+    response = client.get("/cafes/")
+    assert response.status_code == 200
+    assert len(response.data) == 3
+
+@pytest.mark.django_db
+def test_cria_cafeteria_api():
+    client = APIClient()
+    data = &#123;
+        "nome": "API Café",
+        "data_inauguracao": "2023-06-15",
+        "endereco": "Avenida API, 789",
+        "avaliacao": 7.2,
+    &#125;
+    response = client.post("/cafes/", data=data, format='json')
+    assert response.status_code == 201
+    assert response.data["nome"] == "API Café"
+</code></pre></small>
+                </li>
+                <li>Executar testes:
+                    <ul>
+                        <li>Via terminal CLI: pytest</li>
+                        <li>Via terminal CLI com relatório HTML: pytest --html=relatorio.html
+                            <ul>
+                                <li>Abrir no Browser: start relatorio.html</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+
+            <br><h4>Testes frontend:</h4>
+            <p>Testes unitários e de integração, via test runner Vitest.</p>
+            <ol>
+                <li>Em src/, criar diretórios tests/unit/ para testes unitários</li>
+                <li>Modificar vite.config.ts:
+<small><pre><code>
+import &#123; fileURLToPath, URL &#125; from 'node:url'
+import &#123; defineConfig &#125; from 'vite'
+import vue from '@vitejs/plugin-vue'
+import vueDevTools from 'vite-plugin-vue-devtools'
+
+export default defineConfig(&#123;
+    plugins: [
+        vue(),
+        vueDevTools(),
+    ],
+    resolve: &#123;
+        alias: &#123;
+            '@': fileURLToPath(new URL('./src', import.meta.url))
+        &#125;,
+    &#125;,
+    test: &#123;
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: ['./src/tests/setup.ts'],
+    &#125;,
+&#125;)
+</code></pre></small>
+                </li>
+                <li>Em package.json, adicionar trecho de script de testes:
+<small><pre><code>
+"scripts": &#123;
+    # Outro conteúdo
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:e2e": "cypress run --config-file cypress.config.ts --env TS_NODE_COMPILER_OPTIONS='&#123;\"module\":\"ESNext\"&#125;'"
+&#125;
+</code></pre></small>
+                </li>
+                <li>Em src/tests/setup.ts, informar configurações de arquivos de testes:
+<small><pre><code>
+import &#123; beforeAll &#125; from 'vitest'
+
+beforeAll(() =&gt; &#123;
+    Object.defineProperty(window, 'matchMedia', &#123;
+        writable: true,
+        value: (query: string) =&gt; (&#123;
+            matches: false,
+            media: query,
+            onchange: null,
+            addListener: () =&gt; &#123; &#125;,
+            removeListener: () =&gt; &#123; &#125;,
+            addEventListener: () =&gt; &#123; &#125;,
+            removeEventListener: () =&gt; &#123; &#125;,
+            dispatchEvent: () =&gt; false,
+        &#125;),
+    &#125;)
+&#125;)
+</code></pre></small>
+                </li>
+                <li>Editar tsconfig.json:
+<small><pre><code>
+&#123;
+    "files": [],
+    "references": [
+        &#123;
+            "path": "./tsconfig.node.json"
+        &#125;,
+        &#123;
+            "path": "./tsconfig.app.json"
+        &#125;
+    ],
+    "compilerOptions": &#123;
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "types": [
+            "cypress"
+        ],
+        "esModuleInterop": true,
+        "moduleDetection": "force",
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "strict": true
+    &#125;,
+    "include": [
+        "cypress/**/*.ts"
+    ]
+&#125;
+</code></pre></small>
+                </li>
+                <li>Em src/tests/unit/ViewCafe.spec.ts, criar arquivo de testes unitários para tela ViewCafe:
+<small><pre><code>
+import &#123; mount &#125; from '@vue/test-utils'
+import ViewCafe from '../../views/ViewCafe.vue'
+import &#123; describe, it, expect, vi &#125; from 'vitest'
+import &#123; createMemoryHistory, createRouter &#125; from 'vue-router'
+import api from '@/services/api'
+
+vi.mock('@/services/api')
+
+const mockCafe = &#123;
+    id: 1,
+    nome: 'Café de Flore',
+    data_inauguracao: '1887-01-01',
+    endereco: '172 Boulevard Saint-Germain, Paris',
+    avaliacao: 9.5,
+&#125;
+
+const router = createRouter(&#123;
+    history: createMemoryHistory(),
+    routes: [&#123; path: '/view/:id', component: ViewCafe &#125;],
+&#125;)
+
+describe('ViewCafe.vue', () =&gt; &#123;
+    it('exibe detalhes da cafeteria', async () =&gt; &#123;
+        (api.get as any).mockResolvedValue(&#123; data: mockCafe &#125;)
+
+        router.push('/view/1')
+        await router.isReady()
+
+        const wrapper = mount(ViewCafe, &#123;
+            global: &#123;
+                plugins: [router],
+            &#125;,
+        &#125;)
+
+        await new Promise(resolve =&gt; setTimeout(resolve, 0))
+        expect(wrapper.text()).toContain('Café de Flore')
+        expect(wrapper.text()).toContain('1887')
+        expect(wrapper.text()).toContain('172 Boulevard Saint-Germain')
+        expect(wrapper.text()).toContain('9.5')
+    &#125;)
+&#125;)
+</code></pre></small>
+                </li>
+                <li>Em tests/, criar diretório integration/ para testes de integração</li>
+                <li>Em tests/integration/, criar arquivo ViewCafe.integration.spec.ts para teste de exibição de detalhes da cafeteria:
+<small><pre><code>
+import &#123; mount &#125; from '@vue/test-utils'
+import ViewCafe from '../../views/ViewCafe.vue'
+import api from '@/services/api'
+import &#123; describe, it, expect, vi &#125; from 'vitest'
+
+const mockCafe = &#123;
+    id: 1,
+    nome: 'Café Teste',
+    data_inauguracao: '2023-07-20',
+    endereco: 'Rua Teste, 123',
+    avaliacao: 8.5,
+&#125;
+
+vi.mock('@/services/api', () =&gt; (&#123;
+    default: &#123;
+        get: vi.fn(() =&gt; Promise.resolve(&#123; data: mockCafe &#125;)),
+    &#125;,
+&#125;))
+
+vi.mock('vue-router', () =&gt; (&#123;
+    useRoute: () =&gt; (&#123;
+        params: &#123; id: '1' &#125;,
+    &#125;),
+&#125;))
+
+describe('ViewCafe - teste de integração', () =&gt; &#123;
+    it('exibe os detalhes da cafeteria corretamente', async () =&gt; &#123;
+        const wrapper = mount(ViewCafe, &#123;
+            global: &#123;
+                stubs: ['router-link'],
+            &#125;,
+        &#125;)
+
+        await wrapper.vm.$nextTick()
+        await wrapper.vm.$nextTick()
+
+        expect(wrapper.text()).toContain('Café Teste')
+        expect(wrapper.text()).toContain('20/07/2023')
+        expect(wrapper.text()).toContain('Rua Teste, 123')
+        expect(wrapper.text()).toContain('8.5')
+    &#125;)
+&#125;)
+</code></pre></small>
+                </li>
+                <li>Executar testes:
+                    <ul>
+                        <li>Todos testes via terminal CLI: npx vitest</li>
+                        <li>Todos testes com relatório em HTML: npx vitest run --reporter=html</li>
+                        <li>Testes unitários via terminal CLI: npx vitest run tests/unit</li>
+                        <li>Testes de integração via terminal CLI: npx vitest --run tests/integration</li>
+                        <li>Todos testes via interface gráfica GUI: npx vitest --ui</li>
+                        <li>Testes unitários via interface gráfica GUI: npx vitest --ui tests/unit</li>
+                        <li>Testes de integração via interface gráfica GUI: npx vitest --ui tests/integration</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <br><h4>Testes E2E:</h4>
+            <p>Testes End-to-End (E2E) para validar fluxo completo da aplicação RESTful fullstack, via Cypress.</p>
+            <ol>
+                <li>Pré-requisitos: executar servidores backend e frontend;</li>
+                <li>Pasta raíz do projeto frontend, criar estrutura de pastas cypress e abrir Cypress GUI: npx cypress open</li>
+                <li>Pasta raíz do projeto frontend, editar arquivo 'cypress.config.ts':
+<small><pre><code>
+import &#123; defineConfig &#125; from 'cypress'
+
+export default defineConfig(&#123;
+    e2e: &#123;
+        baseUrl: 'http://localhost:5173',
+        specPattern: 'cypress/e2e/**/*.cy.&#123;js,ts&#125;',
+        supportFile: 'cypress/support/e2e.ts',
+        viewportWidth: 1280,
+        viewportHeight: 800,
+        defaultCommandTimeout: 8000,
+        video: true,
+    &#125;,
+&#125;)
+</code></pre></small>
+                </li>
+                <li>Em frontend/cypress, criar diretório e2e/ para arquivos de testes E2E</li>
+                <li>Em frontend/cypress/e2e/, criar arquivo view_cafe.cy.ts para teste E2E da página de detalhes da cafeteria:
+<small><pre><code>
+describe('Visualização de uma cafeteria', () =&gt; &#123;
+    it('deve exibir os detalhes corretamente', () =&gt; &#123;
+        cy.visit('http://localhost:5173/view/1')
+        cy.contains('Cafeteria 1:')
+        cy.contains('Nome:')
+        cy.contains('Avaliação:')
+        cy.contains('/10')
+        cy.get('a').contains('Voltar').click()
+        cy.url().should('eq', 'http://localhost:5173/')
+    &#125;)
+&#125;)
+</code></pre></small>
+                </li>
+                <li>Executar testes: npx cypress run (em package.json, remover linha: type: "module")</li>
+                    <ul>
+                        <li>Via terminal CLI: npx cypress run</li>
+                        <li>Via interface gráfica GUI: npx cypress open</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <br><h4>Pipelines CI/CD:</h4>
+            <p>Configuração de pipelines (fluxos automatizadores) de integração contínua (CI) e entrega contínua (CD) para automatizar testes e deploy no GitHub Actions. Criação de repositório GitHub para armazenar projetos backend (paris_cafe) e frontend (cafe-frontend). Conteúdo do repositório "prj_cafe_fullstack", contendo Pipelines backend.yml e frontend.yml:</p>
+            <ul>
+                <li>Repositório prj_cafe_fullstack
+                    <ul>
+                        <li>paris_cafe/
+                            <ul>
+                                <li>requirements.txt # junto ao manage.py</li>
+                            </ul>
+                        </li>
+                        <li>cafe-frontend/</li>
+                        <li>.github/
+                            <ul>
+                                <li>workflows/
+                                    <ul>
+                                        <li>backend.yml</li>
+                                        <li>frontend.yml</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ol>
+                <li>Criar conta no GitHub, cadastrar usuário e email no Git, vinculá-los a chave SSH .pub, e cadastrar chave no GitHub;</li>
+                <li>No GitHub, criar repositório "prj_cafe_fullstack", e baixá-lo com git clone;</li>
+                <li>Mover projetos paris_cafe e cafe-frontend para dentro da pasta do repositório "prj_cafe_fullstack";</li>
+                <li>Em prj_cafe_fullstack, criar diretório .github/workflows/;</li>
+                <li>Em paris_cafe/requirements.txt, informar dependências do backend:
+<small><pre><code>
+Django
+djangorestframework
+markdown
+django-filter
+django-cors-headers
+pytest
+pytest-django
+pytest-html
+model_bakery
+</code></pre></small>
+                </li>
+                <li>Em .github/workflows/, criar arquivo Pipeline backend.yml:
+<small><pre><code>
+name: Django Backend CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+jobs:
+    testes-backend:
+        runs-on: ubuntu-latest
+
+        services:
+            postgres:
+                image: postgres:15
+                env:
+                    POSTGRES_USER: postgres
+                    POSTGRES_PASSWORD: postgres
+                    POSTGRES_DB: test_db
+                ports: ["5432:5432"]
+                options: &gt;-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+
+        env:
+            DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
+            DJANGO_SETTINGS_MODULE: paris_cafe.settings
+            PYTHONUNBUFFERED: 1
+
+        steps:
+            - name: Checkout o código
+              uses: actions/checkout@v4
+
+            - name: Instalar Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: "3.11"
+
+            - name: Instalar dependências
+              working-directory: paris_cafe
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install -r requirements.txt
+
+            - name: Migrar banco de dados
+              working-directory: paris_cafe
+              run: |
+                  python manage.py migrate
+
+            - name: Executar testes com pytest
+              working-directory: paris_cafe
+              run: |
+                  pytest --html=report.html
+
+            - name: Upload do relatório de testes
+              uses: actions/upload-artifact@v4
+              with:
+                  name: pytest-report
+                  path: paris_cafe/report.html
+</code></pre></small>
+                </li>
+                <li>Em prj_cafe_fullstack, publicar repositório e Pipeline no GitHub:
+                    <ul>
+                        <li>git add .</li>
+                        <li>git commit -m "Projetos inseridos e Pipeline backend criada"</li>
+                        <li>git push</li>
+                        <li>Conferir: git status</li>
+                    </ul>
+                </li>
+                <li>No repositório no GitHub (GitHub Actions), conferir se Pipeline "testes-backend" foi criada e suas etapas executadas corretamente;</li>
+                <li>Em .github/workflows/, criar arquivo Pipeline frontend.yml:
+<small><pre><code>
+name: Pipeline Frontend CI
+
+on:
+    push:
+        branches:
+            - main
+            - develop
+    pull_request:
+
+jobs:
+    testes-frontend:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout do código
+              uses: actions/checkout@v3
+
+            - name: Instalar Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "22"
+
+            - name: Instalar dependências
+              run: npm install
+              working-directory: cafe-frontend
+
+            - name: Executar testes unitários e de integração
+              run: npx vitest
+              working-directory: cafe-frontend
+
+            - name: Gerar relatório de testes
+              run: npx vitest --reporter=html
+              working-directory: cafe-frontend
+</code></pre></small>
+                </li>
+                <li>Em prj_cafe_fullstack, publicar repositório e Pipeline no GitHub:
+                    <ul>
+                        <li>git add .</li>
+                        <li>git commit -m "Pipeline frontend criada"</li>
+                        <li>git push</li>
+                        <li>Conferir: git status</li>
+                    </ul>
+                </li>
+                <li>No repositório no GitHub (GitHub Actions), conferir se Pipeline "testes-frontend" foi criada e suas etapas executadas corretamente;</li>
+                <li>Em .github/workflows/, criar arquivo Pipeline e2e.yml:
+<small><pre><code>
+name: Pipeline E2E
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+
+jobs:
+    testes-e2e:
+        runs-on: ubuntu-latest
+        services:
+            postgres:
+                image: postgres:15
+                env:
+                    POSTGRES_USER: postgres
+                    POSTGRES_PASSWORD: postgres
+                    POSTGRES_DB: test_db
+                ports:
+                    - 5432:5432
+                options: &gt;-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+
+        steps:
+            - name: Fazer checkout do código
+              uses: actions/checkout@v3
+
+            - name: Configurar Python 3.13
+              uses: actions/setup-python@v4
+              with:
+                  python-version: "3.13"
+
+            - name: Configurar Node.js 22
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "22"
+
+            - name: Instalar dependências do backend
+              working-directory: ./paris_cafe
+              run: |
+                  python -m pip install --upgrade pip
+                  pip install -r requirements.txt
+
+            - name: Executar migrações Django
+              working-directory: ./paris_cafe
+              env:
+                  DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
+                  DJANGO_SETTINGS_MODULE: paris_cafe.settings
+              run: |
+                  python manage.py migrate
+
+            - name: Instalar dependências frontend
+              working-directory: ./cafe-frontend
+              run: npm install
+
+            - name: Subir backend em background
+              working-directory: ./paris_cafe
+              env:
+                  DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
+                  DJANGO_SETTINGS_MODULE: paris_cafe.settings
+              run: |
+                  nohup python manage.py runserver 0.0.0.0:8000 &
+            
+            - name: Subir frontend em background
+              working-directory: ./cafe-frontend
+              run: |
+                  nohup npm run dev &
+
+            - name: Executar testes E2E com Cypress
+              working-directory: ./cafe-frontend
+              env:
+                  VITE_BACKEND_URL: http://127.0.0.1:8000
+              run: npx cypress run
+</code></pre></small>
+                </li>
+                <li>Em prj_cafe_fullstack, publicar repositório e Pipeline no GitHub:
+                    <ul>
+                        <li>git add .</li>
+                        <li>git commit -m "Pipeline e2e criada"</li>
+                        <li>git push</li>
+                        <li>Conferir: git status</li>
+                    </ul>
+                </li>
+                <li>No repositório no GitHub (GitHub Actions), conferir se Pipeline "testes-e2e" foi criada e suas etapas executadas corretamente.</li>
+            </ol>
+
+            <br><h4>Deploy na AWS:</h4>
+            <p>Publicar projetos (deploy) na cloud Amazon Web Services (AWS), gratuitamente, via recursos AWS free tier. Criação de instância EC2 (máquina Ubuntu CLI) contendo projetos backend e frontend. Acesse em <a href="https://console.aws.amazon.com/ec2/v2/home" target="_blank" class="text-decoration-none">AWS EC2</a>.</p>
+            <ol>
+                <li>Criar instância:
+                    <ul>
+                        <li>Nome: ubuntuDjangoTeste1</li>
+                        <li>AMI: Ubuntu Server (nível gratuito)</li>
+                        <li>Tipo: t3.micro (verificar se região é t2 ou t3 nível gratuito)</li>
+                        <li>Criar par de chaves:
+                            <ul>
+                                <li>Nome: keyDjangoTeste1</li>
+                                <li>Tipo: RSA</li>
+                                <li>Formato: conforme SO de sua máquina</li>
+                            </ul>
+                        </li>
+                        <li>Rede:
+                            <ul>
+                                <li>Atribuir IP público automaticamente: habilitar</li>
+                                <li>Criar grupo de segurança (nome 'grupoSegurancaTeste1'), com regras de entrada:
+                                    <ul>
+                                        <li>Permitir tráfego Tipo SSH, Intervalo de Portas 22, Origem qualquer lugar (0.0.0.0/0)</li>
+                                        <li>Permitir tráfego Tipo HTTP, Intervalo de Portas 80, Origem qualquer lugar (0.0.0.0/0)</li>
+                                        <li>Permitir tráfego Tipo HTTPS, Intervalo de Portas 443, Origem qualquer lugar (0.0.0.0/0)</li>
+                                        <li>Permitir tráfego Tipo TCP, Intervalo de Portas 8000 (Django), Origem qualquer lugar (0.0.0.0/0)</li>
+                                        <li>Permitir tráfego Tipo TCP, Intervalo de Portas 5173 (Vue.js), Origem qualquer lugar (0.0.0.0/0)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>Armazenamento: 8GiB gp3 (padrão, nível gratuito)</li>
+                    </ul>
+                </li>
+                <li>Executar instância</li>
+                <li>Selecionar instância ubuntuDjangoTeste1, e Conectar CLI usando IP público:
+                    <ul>
+                        <li>sudo apt update && sudo apt install python3-pip npm python3-venv git -y && sudo pip3 install django djangorestframework markdown django-filter django-cors-headers pytest pytest-django pytest-html model_bakery --break-system-packages && sudo npm install -g @vue/cli</li>
+                        <li>curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt install nodejs -y</li>
+                        <li>git clone https://github.com/mateusschwede/cafe_fullstack.git && cd cafe_fullstack/paris_cafe</li>
+                        <li>python3 manage.py migrate</li>
+                        <li>Editar settings.py: comando nano paris_cafe/settings.py
+<small><pre><code>
+ALLOWED_HOSTS = [
+    'ec2-54-233-2-156.sa-east-1.compute.amazonaws.com', // DNS pública da instância EC2
+    'ipv4_instancia', // IPv4 público da instância EC2
+    'localhost',
+    '127.0.0.1',
+]
+</code></pre></small>
+                        </li>
+                        <li>cd ../ && python3 manage.py runserver 0.0.0.0:8000 &
+                            <ul>
+                                <li>Enter para sair do comando iterativo (servidor Django executando em background nohup)</li>
+                            </ul>
+                        </li>
+                        <li>cd ../cafe-frontend</li>
+                        <li>sudo npm install</li>
+                        <li>Editar vite.config.ts: comando nano vite.config.ts
+<small><pre><code>
+export default defineConfig(&#123;
+    // outro conteúdo
+    server: &#123;
+        host: '0.0.0.0',
+        port: 5173,
+        allowedHosts: [
+            'ec2-54-233-2-156.sa-east-1.compute.amazonaws.com' // IPv4 da instância EC2
+        ]
+    &#125;
+&#125;)
+</code></pre></small>
+                        </li>
+                        <li>Editar src/services/api.ts: comando nano src/services/api.ts
+<small><pre><code>
+// outro conteúdo
+baseURL: 'http://ec2-54-233-2-156.sa-east-1.compute.amazonaws.com:8000' // IPv4 da instância EC2
+</code></pre></small>
+                        </li>
+                        <li>sudo npx vite --host
+                            <ul>
+                                <li>Acessar API REST backend Django: http://ipv4_instancia:8000</li>
+                                <li>Acessar projeto no Browser: http://ipv4_instancia:5173</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>Para evitar custos adicionais AWS, excluir: instância ubuntuDjangoTeste1, grupoSegurancaTeste1 e chave de acesso ubuntuDjangoTeste1-key.pem</li>
+            </ol>
+        </div>
+    </div>
+
+
+<!--Rodapé-->
+<div class="row">
+    <div class="col-sm-12 text-center bg-black text-light pt-4 pb-3">
+        <p>Elaborado por Mateus Schwede<br><small class="text-muted">ubsocial.github.io</small></p>
+    </div>
+</div>
+
+</div>
+</body>
+</html>
